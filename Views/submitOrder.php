@@ -28,25 +28,32 @@
         			} ?>" disabled></td>
         	</tr>
         	<tr>
-        		<td>Detalle: </td>
+        		<td>Sucursal: </td>
         		<td>
-	        		<?php if($orden->getSubsidiary()==null) 
+	        		<?php if(isset($orden)){ 
+	        		if($orden->getSubsidiary()==null) 
 	        		{?>
 	        			<a href="/<?= BASE_URL ?>seleccionarSucursal/select" class="btn-volver"> Ingresar Sucursal</a>
 	        		<?php }
 	        		else{ ?>
-	        			Sucursal: <input type="text" name="sucursal" value="<?=$orden->getSubsidiary();?>" disabled> 
-	        		<?php }?>
+	        			<input type="text" name="sucursal" value="<?=$orden->getSubsidiary();?>" disabled> 
+	        		<?php }
+	        		} else{?>
+	        			<a href="/<?= BASE_URL ?>seleccionarSucursal/select" class="btn-volver"> Ingresar Sucursal</a>
+	        		<?php } ?>
         		</td>        		
         	</tr>
         	<tr>
         		<td>Rango Horario: </td>
         		<td><a href="/<?= BASE_URL ?>elegirRangoHorario/Index" class="btn-volver"> Ingresar Rango Horario</a></td>
         	</tr>
+        	<tr><td colspan="2" align="left">Detalle: </td></tr>
+
         </table>
 
          <!-- detalle del pedido  !-->
         <table align='center' class="tabla-envases pizarra expandir-fondo">
+        	
         	<center><tr>
             <td>CERVEZA</td>
             <td>ENVASE</td>

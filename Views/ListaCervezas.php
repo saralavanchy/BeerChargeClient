@@ -6,15 +6,18 @@
     <link rel="stylesheet" href="/<?= BASE_URL ?>Css/style.css"/>
   </head>
   <body class="fondo-madera expandir-fondo">
-    <?php // TODO: Header.php ?>
-    <?php #include('Views/Lobby.php'); 
-    echo '</br></br>';
-    if(isset($msj)){?>
-      <div class="pizarra expandir-fondo centrar" style="width: 800px; font-family: 'Old Bookshop'; font-size: 20px; color: white;">
-          <b style="font-size: 40px;"><?=$msj?></b>
-      </div>
-    <?php } ?>
 
+    <!--Mensaje de alerta de alguna otra pagina-->
+   
+    <?php  if(isset($msj)){ ?>       
+
+        <script type="text/javascript">
+          alert("<?=$msj?>"); //inyecto php en javascript.
+        </script>
+    <?php } ?>    
+    
+
+    <!--Carga de la pizarra con las cervezas-->
     <div class="pizarra expandir-fondo centrar" style="width: 800px; font-family: 'Old Bookshop'; font-size: 20px; color: white;">
       <div style="padding: 10px 0px 10px 30px ">
         <b style="font-size: 40px;">Lista de Cervezas:</b>
