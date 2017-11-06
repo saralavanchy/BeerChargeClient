@@ -1,2 +1,1 @@
-# BeerChargeClient
-client view for BeerCharge
+# BeeRecharge
