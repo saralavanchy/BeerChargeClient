@@ -33,10 +33,10 @@ class AgregarCervezaController {
     }
   }
 
-  public function deleteOrder()
+  public function deleteOrder($mensaje = null)
   {
     unset($_SESSION['order']);
-    $this->returnToBeerList();
+    $this->returnToBeerList($mensaje);
   }
 
   public function newBeer()
@@ -66,22 +66,31 @@ class AgregarCervezaController {
 
   public function newOrder()
   {
-    if (isset($_POST['total']))
+    if(isset($_SESSION['order']))
     {
-        $_SESSION['order']->setTotal($_POST['total']);
-        var_dump($_SESSION['order']);
-        #$this->orderDAO->Insert($_SESSION['order']); 
-        $msj= 'su pedido se ha cargado correctamente. Seleccione una cerveza para ingresar un nuevo pedido';    
-        $this->deleteOrder(); 
+      if (isset($_POST['total']))
+      {
+          $_SESSION['order']->setTotal($_POST['total']);
+          #$this->orderDAO->Insert($_SESSION['order']); 
+          $msj= 'su pedido se ha cargado correctamente. Seleccione una cerveza para ingresar un nuevo pedido';    
+          $this->deleteOrder($msj); 
+      }   
     }
+    else
+    {
+      $msj='debe ingresar una cerveza primero';
+      $this->returnToBeerList($msj);
+    }
+   
     
   }
 
-  public function returnToBeerList()
+  public function returnToBeerList($mensaje = null)
   {
     require_once'Controller/ListaCervezasController.php';
+    $msj=$mensaje;
     $controler=new ListaCervezasController();
-    $controler->index();
+    $controler->index($msj);
   }
 
 } ?>
