@@ -29,4 +29,23 @@ class SeleccionarSucursalController extends GestionController
 		$list = $this->subsidiaryDAO->SelectAll();
     	require_once 'Views/ElegirSucursal.php';
 	}
+
+	public function chargeSubsidiary()
+	{
+		if(isset($_POST['sucursal']))
+		{
+			if(isset($_SESSION['order']))
+			{
+				$_SESSION['order']->setSubsidiary($_POST['sucursal']);
+				require_once 'Views/submitOrder.php';
+			}
+			else
+			{	
+				$msj='debe ingresar una cerveza primero';
+				require_once'Controller/ListaCervezasController.php';
+    			$controler=new ListaCervezasController();
+    			$controler->index($msj);
+			}
+		}
+	}
 }
