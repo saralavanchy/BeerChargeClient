@@ -1,21 +1,24 @@
 <?php namespace DAOS;
+
 use Config\Config as Config;
 use PDO;
-class Connection {
+use Exception;
 
-  private static $instance = null;
+class Connection extends SingletonDAO {
+
+  /*private static $instance = null;
   public static function getInstance() {
     if (is_null(self::$instance)) {
       self::$instance = new self();
     }
     return self::$instance;
-  }
+  }*/
 
   private $pdo;
-protected $table = '';
 
-  private function __construct() {
+  protected function __construct() {
     $this->pdo = new PDO('mysql:host='.DB_HOST.';dbname='.DB_NAME, DB_USER, DB_PASS);
+    $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   }
 
   public function Prepare($sql) {
@@ -28,6 +31,23 @@ protected $table = '';
 
   public function ErrorInfo() {
     return $this->pdo->errorInfo();
+  }
+
+  public function getException(\PDOException $e) {
+    $error = $e->errorInfo;
+    switch ($error[1]) {
+      case '1451':
+        throw new Exception("Integrity constraint violation", 1451);
+        break;
+
+      case '1062':
+        throw new Exception("Registro duplicado", 1062);
+        break;
+
+      default:
+        throw $e;
+        break;
+    }
   }
 }
 ?>

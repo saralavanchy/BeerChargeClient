@@ -1,4 +1,5 @@
 <?php namespace Controller;
+
 use DAOS\AccountDAO as AccountDAO;
 use Model\Account as Account;
 use DAOS\StaffDAO as StaffDAO;
@@ -21,70 +22,88 @@ class LoginController {
   }
 
   public function Index($msj = null) {
-    require_once 'Views/login.php';
+    require_once 'Views/Login.php';
   }
 
-   public function facebookLogin()
-  {
-      if(isset($_POST['usuario']))
-      {
-        $objeto=json_decode($_POST['usuario']);
-        $nombre=$objeto->name;
-        $apellido = $objeto->surname;
-        $username = $nombre.$apellido;
-        $email=$objeto->email;
-        $password=$objeto->password;
-        $image=$objeto->image;
-        
-        $usuario = new Account($username,$email,$password,$image);
-        $account= $this->accountDAO->SelectByUsername($username);
-        
-        if(isset($account))
-        {
-            $_SESSION['account'] = $account;
-            $person= $this->staffDAO->SelectByAccount($account);
-            if(isset($person))
-            {
-               $_SESSION['role'] = $person->getRole();
-               $_SESSION['staff'] = $person;
-               header('location: /'.BASE_URL.'gestion');  
-            }
-            else
-            {
-               $_SESSION['client'] = $client;
-               header('location: /'.BASE_URL.'/listaCervezas');
-            }
-          
-        }
-        else
-        {
-            $person=new Client($nombre,$apellido,'','','',$usuario);
-            $this->ClientDAO->Insert($person);
-        }
-      }
+  private function LoginBoth($client,$staff){
+    $_SESSION['client'] = $client;
+    $_SESSION['role'] = $staff->getRole();
+    $_SESSION['staff'] = $staff;
+    header('location: /'.BASE_URL.'SelectOption');
+  }
+
+  private function LoginClient($client) {
+    $_SESSION['client'] = $client;
+    header('location: /'.BASE_URL.'Lobby');
+  }
+
+  private function LoginStaff($staff) {
+    $_SESSION['role'] = $staff->getRole();
+    $_SESSION['staff'] = $staff;
+    header('location: /'.BASE_URL.'Gestion');
   }
 
   public function ProcesarLogin($username, $password) {
-    $account = $this->accountDAO->SelectByUsername($username);
+    try {
+      $account = $this->accountDAO->SelectByUsername($username);
+    } catch (\Exception $e) {
+        $this->Index("No se pudo conectar");
+    }
     if (isset($account)) {
       if(strcmp ($account->getUserName() , $username ) == 0 && (strcmp ($account->getPassword() , $password )) == 0) {
         $_SESSION['account'] = $account;
         $account = $_SESSION['account'];
-        $staff = $this->staffDAO->SelectByAccount($account);
-        $client = $this->clientDAO->SelectByAccount($account);
-      if (isset($client) /* TODO && !isset($staff)*/) {
-          $_SESSION['client'] = $client;
-          header('location: /'.BASE_URL.'/listaCervezas');
-        } elseif (isset($staff) && !isset($client)) {
-          $_SESSION['role'] = $staff->getRole();
-          $_SESSION['staff'] = $staff;
-          header('location: /'.BASE_URL.'gestion');
+        try {
+          $staff = $this->staffDAO->SelectByAccount($account);
+          $client = $this->clientDAO->SelectByAccount($account);
+        } catch (\Exception $e) {
+          $this->Index("Ocurrio un problema al iniciar sesion");
         }
-      } else {
-        $this->Index('Credenciales incorrectas');
+        if (!isset($staff) && isset($client)) {
+          $this->LoginClient($client);
+        } elseif (isset($staff) && !isset($client)) {
+          $this->LoginStaff($staff);
+        } elseif (isset($staff) && isset($client)) {
+          $this->LoginBoth($client,$staff);
+        }
       }
     }
-    $this->Index('No se encontro el usuario');
+    $this->Index('Credenciales incorrectas');
+  }
+
+  public function facebookLogin($usuario) {
+      if(isset($usuario)) {
+        $objeto = json_decode($usuario);
+        $nombre = $objeto->name;
+        $apellido = $objeto->surname;
+        $username = $nombre.'-'.$apellido;
+        $email = $objeto->email;
+        $password = $objeto->password;
+        $image = $objeto->image;
+
+        $usuario = new Account($username,$email,$password);
+        $account= $this->accountDAO->SelectByEmail($email);
+        if(isset($account)) {
+            $_SESSION['account'] = $account;
+            try {
+              $staff = $this->staffDAO->SelectByAccount($account);
+              $client = $this->clientDAO->SelectByAccount($account);
+            } catch (\Exception $e) {
+              $this->Index("Ocurrio un problema al iniciar sesion");
+          }
+          if (!isset($staff) && isset($client)) {
+            $this->LoginClient($client);
+          } elseif (isset($staff) && !isset($client)) {
+            $this->LoginStaff($staff);
+          } elseif (isset($staff) && isset($client)) {
+            $this->LoginStaff($staff);
+          }
+        } else {
+        $_SESSION['usuario']=$usuario;
+        $_SESSION['fotoPerfil']=$image;
+        header('location: /'.BASE_URL.'Register/facebookRegister');
+      }
+    }
   }
 
   public function Logout() {
@@ -93,4 +112,5 @@ class LoginController {
     unset($_SESSION['staff']);
     header('location: /'.BASE_URL);
   }
+
 } ?>

@@ -7,7 +7,6 @@ class OrderLine {
 	private $beer;
 	private $packaging;
 
-
 public function __construct($amount, $price, $beer, $packaging)	{
 		$this->setAmount($amount);
 		$this->setPrice($price);
@@ -54,5 +53,4 @@ public function __construct($amount, $price, $beer, $packaging)	{
 	public function setPackaging($value){
 		$this->packaging = $value;
 	}
-
 } ?>

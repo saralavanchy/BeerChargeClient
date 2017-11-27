@@ -1,12 +1,12 @@
 <?php namespace DAOS;
 
 use DAOS\Connection as Connection;
-use Model\TimeRange as TimeRange;
+use Model\State as State;
 
-class TimeRangeDAO extends SingletonDAO implements IDAO {
+class StateDAO extends SingletonDAO implements IDAO {
 
   private $pdo;
-  protected $table = 'TimeRanges';
+  protected $table = 'States';
 
   protected function __construct() {
     $this->pdo = Connection::getInstance();
@@ -14,10 +14,9 @@ class TimeRangeDAO extends SingletonDAO implements IDAO {
 
   public function Insert($object) {
     try {
-      $stmt = $this->pdo->Prepare("INSERT INTO ".$this->table." (from_time, to_time) values (?,?)");
+      $stmt = $this->pdo->Prepare("INSERT INTO ".$this->table." (state) values (?)");
       $stmt->execute(array(
-        $object->getFrom(),
-        $object->getTo()
+        $object->getState()
       ));
       $object->setId($this->pdo->LastInsertId());
       return $object;
@@ -29,7 +28,7 @@ class TimeRangeDAO extends SingletonDAO implements IDAO {
 
   public function Delete($object) {
     try {
-      $stmt = $this->pdo->Prepare("DELETE FROM ".$this->table." WHERE id_time_range = ?");
+      $stmt = $this->pdo->Prepare("DELETE FROM ".$this->table." WHERE id_state = ?");
       return ($stmt->execute(array($object->getId())));
     } catch (\PDOException $e) {
       //throw $e;
@@ -37,10 +36,10 @@ class TimeRangeDAO extends SingletonDAO implements IDAO {
     }
   }
 
-  public function DeleteById($id) {
+  public function DeleteById($id_state) {
     try {
-      $stmt = $this->pdo->Prepare("DELETE FROM ".$this->table." WHERE id_time_range = ?");
-      return ($stmt->execute(array($id)));
+      $stmt = $this->pdo->Prepare("DELETE FROM ".$this->table." WHERE id_state = ?");
+      return ($stmt->execute(array($id_state)));
     } catch (\PDOException $e) {
       //throw $e;
       $this->pdo->getException($e);
@@ -49,15 +48,14 @@ class TimeRangeDAO extends SingletonDAO implements IDAO {
 
   public function SelectByID($id) {
     try {
-      $stmt = $this->pdo->Prepare("SELECT * FROM ".$this->table." where id_time_range = ? LIMIT 1");
+      $stmt = $this->pdo->Prepare("SELECT * FROM ".$this->table." where id_state = ? LIMIT 1");
       if ($stmt->execute(array($id))) {
         if ($result = $stmt->fetch()) {
-          $timeRange = new TimeRange(
-            $result['from_time'],
-            $result['to_time']
+          $state = new State(
+            $result['state']
           );
-          $timeRange->setId($result['id_time_range']);
-          return $timeRange;
+          $state->setId($result['id_state']);
+          return $state;
         }
       }
     } catch (\PDOException $e) {
@@ -69,15 +67,14 @@ class TimeRangeDAO extends SingletonDAO implements IDAO {
   public function SelectAll() {
     try {
       $list = array();
-      $stmt = $this->pdo->Prepare("SELECT * FROM ".$this->table."");
+      $stmt = $this->pdo->Prepare("SELECT * FROM ".$this->table." ORDER BY id_state ASC");
       if ($stmt->execute()) {
         while ($result = $stmt->fetch()) {
-          $timeRange = new TimeRange(
-            $result['from_time'],
-            $result['to_time']
+          $state = new State(
+            $result['state']
           );
-          $timeRange->setId($result['id_time_range']);
-          array_push($list, $timeRange);
+          $state->setId($result['id_state']);
+          array_push($list, $state);
         }
         return $list;
       }
@@ -89,10 +86,9 @@ class TimeRangeDAO extends SingletonDAO implements IDAO {
 
   public function Update($object) {
     try {
-      $stmt = $this->pdo->Prepare("UPDATE ".$this->table." SET from_time = ?, to_time = ? WHERE id_time_range = ?");
+      $stmt = $this->pdo->Prepare("UPDATE ".$this->table." SET state = ? WHERE id_state = ?");
       $stmt->execute(array(
-        $object->getFrom(),
-        $object->getTo(),
+        $object->getState(),
         $object->getId()
       ));
       return $object;
