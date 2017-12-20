@@ -11,7 +11,7 @@ use Model\Order as Order;
 class OrderDAO extends SingletonDAO implements IDAO {
 
   private $pdo;
-  protected $table = 'Orders';
+  protected $table = 'OrdersCopy';
   private $stateDAO;
   private $clientDAO;
   private $subsidiaryDAO;
@@ -45,7 +45,7 @@ class OrderDAO extends SingletonDAO implements IDAO {
       return $object;
     } catch (\PDOException $e) {
       //throw $e;
-      $this->pdo->getException($e);
+      throw $e;
     }
   }
 
@@ -68,10 +68,10 @@ class OrderDAO extends SingletonDAO implements IDAO {
           $this->orderLineDAO->Insert($order_line, $object->getOrderNumber());
         }
         return $object;
-      }      
+      }
     } catch (\PDOException $e) {
       //throw $e;
-      $this->pdo->getException($e);
+      throw $e;
     }
   }
 
@@ -81,7 +81,7 @@ class OrderDAO extends SingletonDAO implements IDAO {
       return ($stmt->execute(array($object->getOrderNumber())));
     } catch (\PDOException $e) {
       //throw $e;
-      $this->pdo->getException($e);
+      throw $e;
     }
   }
 
@@ -94,17 +94,18 @@ class OrderDAO extends SingletonDAO implements IDAO {
           $client = $this->clientDAO->SelectByID($result['id_client']);
           $subsidiary = $this->subsidiaryDAO->SelectByID($result['id_subsidiary']);
           $orderLines = $this->orderLineDAO->SelectAllFromOrderNumber($result['order_number']);
-          if($result['id_send']!=null)
+          if($result['id_send'] != null)
             $send = $this->sendDAO->SelectByID($result['id_send']);
           else
             $send = null;
           $order = new Order(
-            $result['order_date'],
+            date_create_from_format('Y-m-d', $result['order_date']),
             $state,
             $client,
             $subsidiary,
             $send
           );
+          echo date_format($order->getOrderDate(), 'Y-m-d');
           foreach ($orderLines as $line) {
             $order->AddOrderLine($line);
           }
@@ -114,7 +115,7 @@ class OrderDAO extends SingletonDAO implements IDAO {
       }
     } catch (\PDOException $e) {
       //throw $e;
-      $this->pdo->getException($e);
+      throw $e;
     }
   }
 
@@ -128,7 +129,7 @@ class OrderDAO extends SingletonDAO implements IDAO {
           $client = $this->clientDAO->SelectByID($result['id_client']);
           $subsidiary = $this->subsidiaryDAO->SelectByID($result['id_subsidiary']);
           $orderLines = $this->orderLineDAO->SelectAllFromOrderNumber($result['order_number']);
-          if($result['id_send']!=null)
+          if($result['id_send'] != null)
             $send = $this->sendDAO->SelectByID($result['id_send']);
           else
             $send = null;
@@ -149,7 +150,7 @@ class OrderDAO extends SingletonDAO implements IDAO {
       }
     } catch (\PDOException $e) {
       //throw $e;
-      $this->pdo->getException($e);
+      throw $e;
     }
   }
 
@@ -163,7 +164,7 @@ class OrderDAO extends SingletonDAO implements IDAO {
           $client = $this->clientDAO->SelectByID($result['id_client']);
           $subsidiary = $this->subsidiaryDAO->SelectByID($result['id_subsidiary']);
           $orderLines = $this->orderLineDAO->SelectAllFromOrderNumber($result['order_number']);
-          if($result['id_send']!=null)
+          if ($result['id_send'] != null)
             $send = $this->sendDAO->SelectByID($result['id_send']);
           else
             $send = null;
@@ -184,7 +185,7 @@ class OrderDAO extends SingletonDAO implements IDAO {
       }
     } catch (\PDOException $e) {
       //throw $e;
-      $this->pdo->getException($e);
+      throw $e;
     }
   }
 
@@ -198,7 +199,7 @@ class OrderDAO extends SingletonDAO implements IDAO {
           $client = $this->clientDAO->SelectByID($result['id_client']);
           $subsidiary = $this->subsidiaryDAO->SelectByID($result['id_subsidiary']);
           $orderLines = $this->orderLineDAO->SelectAllFromOrderNumber($result['order_number']);
-          if($result['id_send']!=null)
+          if($result['id_send'] != null)
             $send = $this->sendDAO->SelectByID($result['id_send']);
           else
             $send = null;
@@ -219,7 +220,7 @@ class OrderDAO extends SingletonDAO implements IDAO {
       }
     } catch (\PDOException $e) {
       //throw $e;
-      $this->pdo->getException($e);
+      throw $e;
     }
   }
 
@@ -233,7 +234,7 @@ class OrderDAO extends SingletonDAO implements IDAO {
           $client = $this->clientDAO->SelectByID($result['id_client']);
           $subsidiary = $this->subsidiaryDAO->SelectByID($result['id_subsidiary']);
           $orderLines = $this->orderLineDAO->SelectAllFromOrderNumber($result['order_number']);
-          if($result['id_send']!=null)
+          if($result['id_send'] != null)
             $send = $this->sendDAO->SelectByID($result['id_send']);
           else
             $send = null;
@@ -254,7 +255,7 @@ class OrderDAO extends SingletonDAO implements IDAO {
       }
     } catch (\PDOException $e) {
       //throw $e;
-    $this->pdo->getException($e);
+    throw $e;
     }
   }
 
@@ -268,7 +269,7 @@ class OrderDAO extends SingletonDAO implements IDAO {
           $client = $this->clientDAO->SelectByID($result['id_client']);
           $subsidiary = $this->subsidiaryDAO->SelectByID($result['id_subsidiary']);
           $orderLines = $this->orderLineDAO->SelectAllFromOrderNumber($result['order_number']);
-          if($result['id_send']!=null)
+          if($result['id_send'] != null)
             $send = $this->sendDAO->SelectByID($result['id_send']);
           else
             $send = null;
@@ -288,8 +289,35 @@ class OrderDAO extends SingletonDAO implements IDAO {
         return $list;
       }
     } catch (\PDOException $e) {
+      throw $e;
+    }
+  }
+
+  public function SelectSendLitersBetweenDatesAndGroupedByBeer($from, $to){
+    try{
+      $tablePackaging='Packagings';
+      $list = array();
+      $stmt = $this->pdo->Prepare(
+        "SELECT Beers.name AS 'Tipo de cerveza', Round((SUM(OrderLines.amount) * Packagings.capacity), 2) AS 'Total' FROM OrderLines ".
+        "RIGHT JOIN Beers ON OrderLines.id_beer = Beers.id_beer ".
+        "RIGHT JOIN Packagings ON OrderLines.id_packaging = Packagings.id_packaging ".
+        "INNER JOIN Orders ON OrderLines.order_number = Orders.order_number ".
+        "WHERE date(Orders.order_date) BETWEEN ? AND ? ".
+        "GROUP BY Beers.id_beer "
+      );
+       if ($stmt->execute(array($from, $to))) {
+        while ($result = $stmt->fetch()) {
+        $tipoCerveza = $result['Tipo de cerveza'];
+        $total = $result['Total'];
+        array_push($list, $tipoCerveza);
+        array_push($list, $total);
+        }
+        return $list;
+      }
+
+    }catch (\PDOException $e) {
       //throw $e;
-      $this->pdo->getException($e);
+      throw $e;
     }
   }
 
@@ -306,7 +334,7 @@ class OrderDAO extends SingletonDAO implements IDAO {
       return $object;
     } catch (\PDOException $e) {
       //throw $e;
-      $this->pdo->getException($e);
+      throw $e;
     }
   }
 } ?>

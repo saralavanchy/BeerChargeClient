@@ -4,15 +4,15 @@ use Config\Config as Config;
 use PDO;
 use Exception;
 
-class Connection extends SingletonDAO {
+class Connection {
 
-  /*private static $instance = null;
+  private static $instance = null;
   public static function getInstance() {
     if (is_null(self::$instance)) {
       self::$instance = new self();
     }
     return self::$instance;
-  }*/
+  }
 
   private $pdo;
 

@@ -24,8 +24,7 @@ class AccountDAO extends SingletonDAO implements IDAO {
       $object->setId($this->pdo->LastInsertId());
       return $object;
     } catch (\PDOException $e) {
-      //throw $e;
-      $this->pdo->getException($e);
+      throw $e;
     }
   }
 
@@ -34,8 +33,7 @@ class AccountDAO extends SingletonDAO implements IDAO {
       $stmt = $this->pdo->Prepare("DELETE FROM ".$this->table." WHERE id_account = ?");
       return ($stmt->execute(array($object->getId())));
     } catch (\PDOException $e) {
-      //throw $e;
-      $this->pdo->getException($e);
+      throw $e;
     }
   }
 
@@ -55,8 +53,7 @@ class AccountDAO extends SingletonDAO implements IDAO {
         }
       }
     } catch (\PDOException $e) {
-      //throw $e;
-      $this->pdo->getException($e);
+      throw $e;
     }
   }
 
@@ -76,15 +73,14 @@ class AccountDAO extends SingletonDAO implements IDAO {
         }
       }
     } catch (\PDOException $e) {
-      //throw $e;
-      $this->pdo->getException($e);
+      throw $e;
     }
   }
 
-  public function SelectByEmail($email){
+  public function SelectByEmail($username) {
     try {
       $stmt = $this->pdo->Prepare("SELECT * FROM ".$this->table." WHERE email = ? LIMIT 1");
-      if ($stmt->execute(array($email))) {
+      if ($stmt->execute(array($username))) {
         if ($result = $stmt->fetch()) {
           $account = new Account(
             $result['username'],
@@ -97,9 +93,8 @@ class AccountDAO extends SingletonDAO implements IDAO {
         }
       }
     } catch (\PDOException $e) {
-      //throw $e;
-      $this->pdo->getException($e);
-    } 
+      throw $e;
+    }
   }
 
   public function SelectAll() {
@@ -120,8 +115,7 @@ class AccountDAO extends SingletonDAO implements IDAO {
         return $list;
       }
     } catch (\PDOException $e) {
-      //throw $e;
-      $this->pdo->getException($e);
+      throw $e;
     }
   }
 
@@ -137,8 +131,7 @@ class AccountDAO extends SingletonDAO implements IDAO {
       ));
       return $object;
     } catch (\PDOException $e) {
-      //throw $e;
-      $this->pdo->getException($e);
+      throw $e;
     }
   }
 } ?>
