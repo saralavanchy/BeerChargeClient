@@ -6,7 +6,7 @@ define('BASE_URL', 'BeeRecharge/');
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_NAME', 'beerecharge');
+define('DB_NAME', 'BeeRecharge');
 
 define('IMG_PATH', 'Image/');
 define('MAX_IMG_SIZE', 5000000);

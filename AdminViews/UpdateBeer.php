@@ -1,9 +1,6 @@
-<?php if (isset($alert) && !strcmp($alert, "") == 0) { ?>
-  <div class="alert <?= $alert; ?>">
-    <?= $msj; ?>
-  </div>
-<?php } ?>
-<form class="form" name="form" action="/<?= BASE_URL ?>gestionBeer/UpdateBeer" method="post" onsubmit="return Validar();">
+<style> span { float: right; font-size: 12px; }
+span:hover { text-decoration: underline; } </style>
+<form class="form" name="form" action="/<?= BASE_URL ?>gestionBeer/UpdateBeer" method="post" onsubmit="return Validar();" enctype="multipart/form-data">
   <table class="centrar">
     <tr>
       <td><h1>Modificar Cerveza</h1></td>
@@ -12,7 +9,8 @@
       <td colspan="2">
         <select name="id" id="beer" onchange="Actualizar()">
           <?php foreach($list as $beer) { ?>
-          <option value="<?=$beer->getId();?>"><?=$beer->getName();?></option>
+          <option <?php if (isset($id_beer) && ($id_beer == $beer->getId())) { echo "selected"; } ?>
+             value="<?=$beer->getId();?>"><?=$beer->getName();?></option>
           <?php } ?>
         </select>
       </td>
@@ -54,10 +52,22 @@
       <td colspan="2"><input type="number" step="0.1" min="0" name="graduation" value=""></td>
     </tr>
     <tr>
+      <td><label>Envases</label> <span onclick="SelTodos();">Seleccionar todos</span></td>
+    </tr>
+    <?php foreach($packagings_list as $pack) { ?>
+    <tr>
+      <td><?= $pack->getDescription(); ?></td>
+      <td><input type="checkbox" name="packagings[]" value="<?= $pack->getId(); ?>"></td>
+    </tr>
+    <?php } ?>
+    <tr>
       <td><label for="image">Imagen</label></td>
     </tr>
     <tr>
-      <td colspan="2"><input type="file" name="image" value="" disabled></td>
+      <td colspan="2" id="img"></td>
+    </tr>
+    <tr>
+      <td colspan="2"><input type="file" name="image" value=""></td>
     </tr>
     <tr>
       <td colspan="2"><input type="submit" class="submit" value="Guardar cambios"></td>
@@ -84,6 +94,35 @@ function Validar() {
   return ok;
 }
 
+function SelTodos() {
+  inputs = document.getElementsByTagName('input');
+  for (i = 0; i < inputs.length; i++) {
+    if (inputs[i].type == "checkbox") {
+      inputs[i].checked = true;
+    }
+  }
+}
+
+function DesmarcarTodos() {
+  inputs = document.getElementsByTagName('input');
+  for (i = 0; i < inputs.length; i++) {
+    if (inputs[i].type == "checkbox") {
+      inputs[i].checked = false;
+    }
+  }
+}
+
+function Marcar(id_packaging) {
+  inputs = document.getElementsByTagName('input');
+  for (i = 0; i < inputs.length; i++) {
+    if (inputs[i].type == "checkbox") {
+      if (inputs[i].value == id_packaging) {
+        inputs[i].checked = true;
+      }
+    }
+  }
+}
+
 function Mostrar(datos) {
   var beer = JSON.parse(datos);
   var form = document.form;
@@ -93,6 +132,18 @@ function Mostrar(datos) {
   form.ibu.value = beer.ibu;
   form.srm.value = beer.srm;
   form.graduation.value = beer.graduation;
+
+  DesmarcarTodos();
+  for (var i = 0; i < beer.packagings.length; i++) {
+    Marcar(beer.packagings[i].id_packaging);
+  }
+
+  if (beer.image != "" && beer.image != null) {
+    var img = "/<?= BASE_URL.IMG_PATH ?>"+beer.image;
+    document.getElementById('img').innerHTML = "<img src="+img+">";
+  } else {
+    document.getElementById('img').innerHTML = "";
+  }
 }
 
 function Actualizar() {

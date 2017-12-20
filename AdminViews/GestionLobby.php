@@ -20,61 +20,72 @@
       Usuario <?= $_SESSION['account']->getUsername(); ?> logueado como <?= $_SESSION['role']->getRolename(); ?>
     </div>
     <ul class="dropdown-contenedor">
-      <li><a href="/<?= BASE_URL ?>gestion" class="dropdown-link">Inicio</a></li>
+      <li><a href="/<?= BASE_URL ?>Gestion" class="dropdown-link">Inicio</a></li>
       <li class="dropdown">
-        <a class="dropdown-btn">Pedidos</a>
+        <a class="dropdown-btn">Consultas</a>
         <div class="dropdown-contenido">
-          <a href="/">Consultar</a>
+          <a href="/<?= BASE_URL ?>GestionConsults/FilterOrdersByClient">Consultar ordenes por Cliente</a>
+          <a href="/<?= BASE_URL ?>GestionConsults/FilterOrdersByDates">Consultar ordenes por Fechas</a>
+          <a href="/<?= BASE_URL ?>GestionConsults/FilterOrdersBySubsidiary">Consultar ordenes por Sucursal</a>
+          <a href="/<?= BASE_URL ?>GestionConsults/ConsultSoldLiters">Consultar litros vendidos</a>
         </div>
       </li>
       <li class="dropdown">
         <a class="dropdown-btn">Gestion Cervezas</a>
         <div class="dropdown-contenido">
-          <a href="/<?= BASE_URL ?>gestionBeer/SubmitBeer">Alta</a>
-          <a href="/<?= BASE_URL ?>gestionBeer/DeleteBeer">Baja</a>
-          <a href="/<?= BASE_URL ?>gestionBeer/UpdateBeer">Modificacion</a>
+          <a href="/<?= BASE_URL ?>GestionBeer/Submit">Alta</a>
+          <a href="/<?= BASE_URL ?>GestionBeer/Delete">Baja</a>
+          <a href="/<?= BASE_URL ?>GestionBeer/Update">Modificacion</a>
         </div>
       </li>
       <li class="dropdown">
         <a class="dropdown-btn">Gestion Envases</a>
         <div class="dropdown-contenido">
-          <a href="/<?= BASE_URL ?>gestionPackaging/SubmitPackaging">Alta</a>
-          <a href="/<?= BASE_URL ?>gestionPackaging/DeletePackaging">Baja</a>
-          <a href="/<?= BASE_URL ?>gestionPackaging/UpdatePackaging">Modificacion</a>
+          <a href="/<?= BASE_URL ?>GestionPackaging/Submit">Alta</a>
+          <a href="/<?= BASE_URL ?>GestionPackaging/Delete">Baja</a>
+          <a href="/<?= BASE_URL ?>GestionPackaging/Update">Modificacion</a>
         </div>
       </li>
       <li class="dropdown">
         <a class="dropdown-btn">Gestion Sucursales</a>
         <div class="dropdown-contenido">
-          <a href="/<?= BASE_URL ?>GestionSubsidiary/SubmitSubsidiary">Alta</a>
-          <a href="/<?= BASE_URL ?>GestionSubsidiary/DeleteSubsidiary">Baja</a>
-          <a href="/<?= BASE_URL ?>GestionSubsidiary/UpdateSubsidiary">Modificacion</a>
+          <a href="/<?= BASE_URL ?>GestionSubsidiary/Submit">Alta</a>
+          <a href="/<?= BASE_URL ?>GestionSubsidiary/Delete">Baja</a>
+          <a href="/<?= BASE_URL ?>GestionSubsidiary/Update">Modificacion</a>
           <a href="/<?= BASE_URL ?>GestionSubsidiary/ManageMarkers">Administrar Marcadores</a>
         </div>
       </li>
       <li class="dropdown">
         <a class="dropdown-btn">Gestion Staff</a>
         <div class="dropdown-contenido">
-          <a href="/<?= BASE_URL ?>gestionStaff/SubmitStaff">Alta</a>
-          <a href="/<?= BASE_URL ?>gestionStaff/DeleteStaff">Baja</a>
-          <a href="/<?= BASE_URL ?>gestionStaff/UpdateStaff">Modificacion</a>
+          <a href="/<?= BASE_URL ?>GestionStaff/Submit">Alta</a>
+          <a href="/<?= BASE_URL ?>GestionStaff/Delete">Baja</a>
+          <a href="/<?= BASE_URL ?>GestionStaff/Update">Modificacion</a>
         </div>
       </li>
       <li class="dropdown">
         <a class="dropdown-btn">Gestion Roles</a>
         <div class="dropdown-contenido">
-          <a href="/<?= BASE_URL ?>gestionRole/SubmitRole">Alta</a>
-          <a href="/<?= BASE_URL ?>gestionRole/DeleteRole">Baja</a>
-          <a href="/<?= BASE_URL ?>gestionRole/UpdateRole">Modificacion</a>
+          <a href="/<?= BASE_URL ?>GestionRole/Submit">Alta</a>
+          <a href="/<?= BASE_URL ?>GestionRole/Delete">Baja</a>
+          <a href="/<?= BASE_URL ?>GestionRole/Update">Modificacion</a>
         </div>
       </li>
       <li class="dropdown">
         <a class="dropdown-btn">Gestion Rangos Horarios</a>
         <div class="dropdown-contenido">
-          <a href="/<?= BASE_URL ?>gestionTimeRange/SubmitTimeRange">Alta</a>
-          <a href="/<?= BASE_URL ?>gestionTimeRange/DeleteTimeRange">Baja</a>
-          <a href="/<?= BASE_URL ?>gestionTimeRange/UpdateTimeRange">Modificacion</a>
+          <a href="/<?= BASE_URL ?>GestionTimeRange/Submit">Alta</a>
+          <a href="/<?= BASE_URL ?>GestionTimeRange/Delete">Baja</a>
+          <a href="/<?= BASE_URL ?>GestionTimeRange/Update">Modificacion</a>
         </div>
       </li>
-      <li><a href="/<?= BASE_URL ?>login/logout" class="dropdown-link">Cerrar sesión</a></li>
+      <li class="dropdown">
+        <a class="dropdown-btn">Gestion Estados</a>
+        <div class="dropdown-contenido">
+          <a href="/<?= BASE_URL ?>GestionState/Submit">Alta</a>
+          <a href="/<?= BASE_URL ?>GestionState/Delete">Baja</a>
+          <a href="/<?= BASE_URL ?>GestionState/Update">Modificacion</a>
+        </div>
+      </li>
+      <li><a href="/<?= BASE_URL ?>Login/Logout" class="dropdown-link">Cerrar sesión</a></li>
     </ul>

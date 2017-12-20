@@ -1,8 +1,3 @@
-<?php if (isset($alert) && !strcmp($alert, "") == 0) { ?>
-  <div class="alert <?= $alert; ?>">
-    <?= $msj; ?>
-  </div>
-<?php } ?>
 <form class="form" name="form" action="/<?= BASE_URL ?>gestionPackaging/DeletePackaging" method="post" onsubmit="return Confirmar();">
   <table class="centrar">
     <tr>
@@ -12,7 +7,7 @@
       <td colspan="2">
         <select name="packaging" onchange="Actualizar()">
           <?php foreach($list as $packaging) { ?>
-          <option value="<?=$packaging->getId();?>"><?=$packaging->getDescription();?></option>
+          <option value = "<?=$packaging->getId();?>"><?= $packaging->getDescription(); ?></option>
           <?php } ?>
         </select>
       </td>

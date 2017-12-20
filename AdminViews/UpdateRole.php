@@ -1,8 +1,3 @@
-<?php if (isset($alert) && !strcmp($alert, "") == 0) { ?>
-  <div class="alert <?= $alert; ?>">
-    <?= $msj; ?>
-  </div>
-<?php } ?>
 <form class="form" name="form" action="/<?= BASE_URL ?>gestionRole/UpdateRole" method="post" onsubmit="return Validar();">
   <table class="centrar">
     <tr>
@@ -12,7 +7,8 @@
       <td colspan="2">
         <select name="id" id="role" onchange="Actualizar()">
           <?php foreach($list as $role) { ?>
-          <option value="<?=$role->getId();?>"><?=$role->getRolename();?></option>
+          <option <?php if (isset($id_role) && ($id_role == $role->getId())) { echo "selected"; } ?>
+            value="<?=$role->getId();?>"><?=$role->getRolename();?></option>
           <?php } ?>
         </select>
       </td>

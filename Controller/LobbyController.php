@@ -6,6 +6,7 @@ use DAOS\PackagingDAO as PackagingDAO;
 use DAOS\SubsidiaryDAO as SubsidiaryDAO;
 use DAOS\TimeRangeDAO as TimeRangeDAO;
 use DAOS\ClientDAO as ClientDAO;
+use Exception;
 
 class LobbyController {
 
@@ -25,18 +26,29 @@ class LobbyController {
       header('location: /'.BASE_URL);
     }
     if (!isset($_SESSION['order'])) {
-      $client = $this->clientDAO->SelectByAccount($_SESSION['account']);
-      $_SESSION['order'] = new Order(null, null, $client, null);
+      try{
+         $client = $this->clientDAO->SelectByAccount($_SESSION['account']);
+          $_SESSION['order'] = new Order(null, null, $client, null);  
+      } catch (\Exception $e){
+
+      }
+     
     }
     require_once 'Views/Lobby.php';
   }
 
   public function Index() {
+    try{
     $cervezas = $this->beerDAO->SelectAll();
-    require_once 'Views/ListaCervezas.php';
+    $cervezas = $this->QuitarCervezasSinPackaging($cervezas);
+  }catch(\Exception $e){
+
+  }
+  require_once 'Views/ListaCervezas.php';
   }
 
   public function AgregarCerveza($id_beer) {
+    unset($_SESSION['date']);
     try {
       $beer = $this->beerDAO->SelectByID($id_beer);
       if (isset($beer)) {
@@ -47,18 +59,40 @@ class LobbyController {
     }
   }
 
+   private function QuitarCervezasSinPackaging($lista) {
+    $aux = array();
+    foreach ($lista as $cerveza) {
+      if (!empty($cerveza->getPackagings())) {
+        array_push($aux, $cerveza);
+      }
+    }
+    return $aux;
+  }
+
   public function ElegirSucursal() {
+    unset($_SESSION['date']);
     $subsidiarys = $this->subsidiaryDAO->SelectAll();
     require_once 'Views/ElegirSucursal.php';
   }
 
   public function SubmitOrder() {
+    unset($_SESSION['date']);
     if (isset($_SESSION['order'])) {
       $order = $_SESSION['order'];
-      $subsidiary = $order->getSubsidiary();
+      try{
+        $subsidiary = $order->getSubsidiary();
+      }catch(\Exception $e){
+
+      }
+      
       require_once 'Views/SubmitOrder.php';
     } else {
       header('location: /'.BASE_URL.'Lobby');
     }
+  }
+
+  public function ConsultarEstado(){
+    unset($_SESSION['date']);
+    require_once 'Views/consultarEstado.php';
   }
 } ?>

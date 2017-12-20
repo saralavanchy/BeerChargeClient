@@ -1,8 +1,3 @@
-<?php if (isset($alert) && !strcmp($alert, "") == 0) { ?>
-  <div class="alert <?= $alert; ?>">
-    <?= $msj; ?>
-  </div>
-<?php } ?>
 <form class="form" name="form" action="/<?= BASE_URL ?>GestionSubsidiary/DeleteSubsidiary" method="post" onsubmit="return Confirmar();">
   <table class="centrar">
     <tr>

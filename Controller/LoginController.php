@@ -25,13 +25,6 @@ class LoginController {
     require_once 'Views/Login.php';
   }
 
-  private function LoginBoth($client,$staff){
-    $_SESSION['client'] = $client;
-    $_SESSION['role'] = $staff->getRole();
-    $_SESSION['staff'] = $staff;
-    header('location: /'.BASE_URL.'SelectOption');
-  }
-
   private function LoginClient($client) {
     $_SESSION['client'] = $client;
     header('location: /'.BASE_URL.'Lobby');
@@ -41,6 +34,13 @@ class LoginController {
     $_SESSION['role'] = $staff->getRole();
     $_SESSION['staff'] = $staff;
     header('location: /'.BASE_URL.'Gestion');
+  }
+
+  private function LoginBoth($client,$staff){
+    $_SESSION['client'] = $client;
+    $_SESSION['role'] = $staff->getRole();
+    $_SESSION['staff'] = $staff;
+    header('location: /'.BASE_URL.'SelectOption');
   }
 
   public function ProcesarLogin($username, $password) {
@@ -64,7 +64,7 @@ class LoginController {
         } elseif (isset($staff) && !isset($client)) {
           $this->LoginStaff($staff);
         } elseif (isset($staff) && isset($client)) {
-          $this->LoginBoth($client,$staff);
+          $this->LoginBoth($client, $staff);
         }
       }
     }
@@ -82,9 +82,10 @@ class LoginController {
         $image = $objeto->image;
 
         $usuario = new Account($username,$email,$password);
-        $account= $this->accountDAO->SelectByEmail($email);
+        $account= $this->accountDAO->SelectByUsername($username);
         if(isset($account)) {
             $_SESSION['account'] = $account;
+            $account = $_SESSION['account'];
             try {
               $staff = $this->staffDAO->SelectByAccount($account);
               $client = $this->clientDAO->SelectByAccount($account);
@@ -96,11 +97,11 @@ class LoginController {
           } elseif (isset($staff) && !isset($client)) {
             $this->LoginStaff($staff);
           } elseif (isset($staff) && isset($client)) {
-            $this->LoginStaff($staff);
+            $this->LoginBoth($client, $staff);
           }
         } else {
-        $_SESSION['usuario']=$usuario;
-        $_SESSION['fotoPerfil']=$image;
+        $_SESSION['usuario'] = $usuario;
+        $_SESSION['fotoPerfil'] = $image;
         header('location: /'.BASE_URL.'Register/facebookRegister');
       }
     }
@@ -110,7 +111,8 @@ class LoginController {
     unset($_SESSION['account']);
     unset($_SESSION['role']);
     unset($_SESSION['staff']);
+    unset($_SESSION['date']);
+    unset($_SESSION['order']);
     header('location: /'.BASE_URL);
   }
-
 } ?>

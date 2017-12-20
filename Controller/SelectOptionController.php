@@ -25,15 +25,19 @@ class SelectOptionController {
     require_once 'Views/SelectOption.php';
   }
 
-  public function Select($value) {
-    switch ($value) {
-      case 'Client':
-       header('location: /'.BASE_URL.'Lobby');
-      break;
-      
-      case 'Staff':
-         header('location: /'.BASE_URL.'Gestion');
+  public function Select($value = null) {
+    if (!isset($value)) {
+      $this->Index();
+    } else {
+      switch ($value) {
+        case 'Client':
+        header('location: /'.BASE_URL.'Lobby');
         break;
+
+        case 'Staff':
+        header('location: /'.BASE_URL.'Gestion');
+        break;
+      }
     }
   }
 }

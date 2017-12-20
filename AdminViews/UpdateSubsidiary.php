@@ -1,9 +1,3 @@
-<?php if (isset($alert) && !strcmp($alert, "") == 0) { ?>
-  <div class="alert <?= $alert; ?>">
-    <?= $msj; ?>
-  </div>
-<?php } ?>
-
 <form class="form" name="form" action="/<?= BASE_URL ?>gestionSubsidiary/UpdateSubsidiary" method="post" onsubmit="return Validar();">
   <table class="centrar">
     <tr>
@@ -13,7 +7,8 @@
       <td colspan="2">
         <select name="id" id="subsidiary" onchange="Actualizar()">
           <?php foreach($list as $subsidiary) { ?>
-          <option value="<?=$subsidiary->getId();?>"><?=$subsidiary->getAddress();?></option>
+          <option <?php if (isset($id_subsidiary) && ($id_subsidiary == $subsidiary->getId())) { echo "selected"; } ?>
+            value="<?= $subsidiary->getId(); ?>"><?= $subsidiary->getAddress(); ?></option>
           <?php } ?>
         </select>
       </td>

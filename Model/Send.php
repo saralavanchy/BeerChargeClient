@@ -5,13 +5,13 @@ class Send {
   private $address;
   private $state;
   private $time_range;
-  private $sendDate;
+  private $date;
 
-  public function __construct($address, $state, $time_range, $sendDate) {
+  public function __construct($address, $state, $time_range, $date) {
     $this->setAddress($address);
     $this->setState($state);
     $this->setTimeRange($time_range);
-    $this->setSendDate($sendDate);
+    $this->setSendDate($date);
   }
 
   public function getId() {
@@ -51,6 +51,10 @@ class Send {
   }
 
   public function setSendDate($value) {
-    $this->sendDate = $value;
+    if ($value != null) {
+			$this->sendDate = $value;
+		} else {
+			$this->sendDate = date("Y-m-d");
+    }
   }
 } ?>

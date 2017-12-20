@@ -27,7 +27,7 @@
       </li>
       <li><a href="/<?= BASE_URL ?>Lobby/SubmitOrder" class="dropdown-link">Confirmar Pedido</a>
       </li>
-      <li><a href="/<?= BASE_URL ?>consultarEstado/Index" class="dropdown-link">Consultar Estado</a>
+      <li><a href="/<?= BASE_URL ?>Lobby/ConsultarEstado" class="dropdown-link">Consultar Estado</a>
       </li>
       <li><a href="/<?= BASE_URL ?>login/logout" class="dropdown-link" align='right'>Cerrar sesión</a></li>
     </ul>

@@ -24,7 +24,6 @@ class OrderController {
       if (strcmp($select, '2') == 0) {
         header('location: /'.BASE_URL.'Send');
       } else {
-        $order->setSend(null);
         $this->ConfirmOrder();
       }
     } else {
@@ -41,11 +40,9 @@ class OrderController {
         $order = $this->orderDAO->Insert($order);
         $this->DeleteOrder();
       } catch (\Exception $e) {
-        echo($e->getMessage());
       }
-      Debug($order);      
     }
-    #header('location: /'.BASE_URL.'Lobby');
+    header('location: /'.BASE_URL.'Lobby');
   }
 
   public function DeleteOrder() {

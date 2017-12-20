@@ -12,6 +12,7 @@ class ElegirSucursalController {
   }
 
   public function Index($id_subsidiary) {
+    unset($_SESSION['date']);
     try {
       $subsidiary = $this->subsidiaryDAO->SelectByID($id_subsidiary);
       if (isset($_SESSION['order'])) {

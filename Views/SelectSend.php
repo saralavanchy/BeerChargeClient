@@ -11,7 +11,7 @@
 				<table class="centrar tabla-register pizarra">
           <tr>
             <td align="right"><label for="date"> Fecha de entrega: </label></td>
-            <td><input type="date" name="senDate" value=<?=date("Y-m-d")?>></td>
+            <td><input type="date" name="senDate" min=<?= date('Y-m-d'); ?> value=<?=date("Y-m-d")?>></td>
           </tr>
           <tr>
             <td><label for="send">Envío a mi domicilio</label></td>
@@ -44,7 +44,7 @@
             </td>
 					</tr>
           <tr>
-            
+
           </tr>
 					<tr>
 						<td colspan="2"><input type="submit" class="btn-login" value="Confirmar Envío"></td>

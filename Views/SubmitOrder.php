@@ -64,9 +64,9 @@
         <tr>
           <input type="hidden" name="total" value=<?= $total;?>>
 
-          <td><a href="/<?= BASE_URL ?>Lobby" class="btn-order"><button type="button">Ingresar otra Cerveza</button></a></td>
-          <td><a href="/<?= BASE_URL ?>Order/DeleteOrder" class="btn-order"><button type="button">Eliminar Pedido</button></td>
-          <td><input type="submit" name="" value='Ingresar Pedido'
+          <td><a href="/<?= BASE_URL ?>Lobby" class="btn-order"><button type="button" class="btn-login">Ingresar otra Cerveza</button></a></td>
+          <td><a href="/<?= BASE_URL ?>Order/DeleteOrder" class="btn-order"><button type="button" class="btn-login">Eliminar Pedido</button></td>
+          <td><input type="submit" class="btn-login" name="" value='Ingresar Pedido'
           <?php if ($order->getSubsidiary() == null) { ?>
             title="Seleccione una sucursal" disabled
           <?php } elseif (empty($order->getOrderLines())) { ?>

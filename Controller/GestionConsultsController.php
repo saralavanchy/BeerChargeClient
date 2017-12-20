@@ -4,12 +4,14 @@ use DAOS\OrderDAO as OrderDAO;
 use Model\Order as Order;
 use DAOS\ClientDAO as ClientDAO;
 use DAOS\SubsidiaryDAO as SubsidiaryDAO;
+use DAOS\StateDAO as StateDAO;
 
 class GestionConsultsController extends GestionController {
 
   private $orderDAO;
   private $clientDAO;
   private $subsidiaryDAO;
+  private $stateDAO;
 
 
   public function __construct() {
@@ -18,9 +20,15 @@ class GestionConsultsController extends GestionController {
     $this->orderDAO = OrderDAO::getInstance();
     $this->clientDAO = ClientDAO::getInstance();
     $this->subsidiaryDAO = SubsidiaryDAO::getInstance();
+    $this->stateDAO = StateDAO::getInstance();
   }
 
   public function Index() {}
+
+  private function List($list) {
+    $state_list = $this->stateDAO->SelectAll();
+    require_once 'AdminViews/OrderList.php';
+  }
 
   public function FilterOrdersByClient($client_dni = null) {
     if(isset($client_dni)) {
@@ -29,19 +37,24 @@ class GestionConsultsController extends GestionController {
         if (isset($client)) {
           $list = $this->orderDAO->SelectAllFromClientDNI($client_dni);
           if (empty($list)) {
-            throw new \Exception("El cliente no posee pedidos", 1);
+            $alert = "green";
+            $msj = "El cliente no posee pedidos";
+            $this->Alert($msj, $alert);
           }
         } else {
-          throw new \Exception("No se encontro el Cliente", 1);
+          $alert = "green";
+          $msj = "No se encontro el Cliente";
+          $this->Alert($msj, $alert);
         }
       } catch (\Exception $e) {
         $alert = "yellow";
-        $msj = $e->getMessage();
+        $msj = "Ocurrio un problema al traer la lista de Ordenes";
+        $this->Alert($msj, $alert);
       }
     }
     require_once 'AdminViews/FilterOrdersByClient.php';
     if (!empty($list)) {
-      require_once 'AdminViews/OrderList.php';
+      $this->List($list);
     }
   }
 
@@ -59,7 +72,7 @@ class GestionConsultsController extends GestionController {
     }
     require_once 'AdminViews/FilterOrdersByDates.php';
     if (!empty($list)) {
-      require_once 'AdminViews/OrderList.php';
+      $this->List($list);
     }
   }
 
@@ -85,14 +98,28 @@ class GestionConsultsController extends GestionController {
     } catch (\Exception $e) {
       $alert = "yellow";
       $msj = $e->getMessage();
-    }    
+    }
     require_once 'AdminViews/FilterOrdersBySubsidiary.php';
     if (!empty($list)) {
-      require_once 'AdminViews/OrderList.php';
+      $this->List($list);
     }
   }
 
-  public function ConsultSoldLiters($from = null, $to = null) {
+public function ConsultSoldLiters($from = null, $to = null) {
+    if (isset($from) && isset($to)) {
+      try {
+        $list = $this->orderDAO->SelectSendLitersBetweenDatesAndGroupedByBeer($from, $to);
+        if (empty($list)) {
+          throw new \Exception("No hay pedidos entre estas fechas", 1);
+        }
+      } catch (\Exception $e) {
+        $alert = "yellow";
+        $msj = $e->getMessage();
+      }
+    }
     require_once 'AdminViews/ConsultSoldLiters.php';
+    if (!empty($list)) {
+      require_once 'AdminViews/OrderListBeers.php';
+    }
   }
 } ?>

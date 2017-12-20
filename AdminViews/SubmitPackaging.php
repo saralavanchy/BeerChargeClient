@@ -1,10 +1,4 @@
-<?php if (isset($alert) && !strcmp($alert, "") == 0) { ?>
-  <div class="alert <?= $alert; ?>">
-    <?= $msj; ?>
-  </div>
-<?php } ?>
-
-<form class="form" name="form" action="/<?= BASE_URL ?>gestionPackaging/SubmitPackaging" method="post" onsubmit="return Validar();">
+<form class="form" name="form" action="/<?= BASE_URL ?>gestionPackaging/SubmitPackaging" method="post" onsubmit="return Validar();" enctype="multipart/form-data">
   <table class="centrar">
     <tr>
       <td><h1>Nuevo Envase</h1></td>
@@ -26,6 +20,12 @@
     </tr>
     <tr>
       <td colspan="2"><input type="number" step="0.01" min="0" name="factor" value="1.0"></td>
+    </tr>
+    <tr>
+      <td><label for="image">Imagen</label></td>
+    </tr>
+    <tr>
+      <td colspan="2"><input type="file" name="image" value=""></td>
     </tr>
     <tr>
       <td colspan="2"><input type="submit" class="submit" value="Agregar Envase"></td>

@@ -31,15 +31,7 @@ function GenerateMap() {
 
 function Mostrar(datos) {
   var subsidiary = JSON.parse(datos);
-  console.log(subsidiary.lat + " " + subsidiary.lon);
   GenerateMarker(subsidiary);
-}
-
-function Actualizar() {
-  var subsidiary = form.subsidiary.options[form.subsidiary.selectedIndex].value;
-  Ajax('/Ajax/GetSubsidiary', 'post', 'msj='+subsidiary, function(respuestaAjax) {
-    Mostrar(respuestaAjax);
-  });
 }
 
 function GenerateMarker(subsidiary) {
@@ -48,4 +40,7 @@ function GenerateMarker(subsidiary) {
   document.form.lat.value = lat;
   document.form.lon.value = lon;
   marker.setPosition({lat:lat, lng:lon});
-};
+  if(lat != 0 && lon != 0) {
+    map.panTo({lat:lat, lng:lon});
+  }
+}
